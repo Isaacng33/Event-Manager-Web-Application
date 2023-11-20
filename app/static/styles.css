@@ -1,0 +1,101 @@
+.alert-container {
+    position: fixed;
+    top: 70px;
+    right: 15px;
+    width: 100%; /* Adjust the width for responsiveness */
+    max-width: 300px; /* Set a maximum width */
+    z-index: 1000;
+}
+
+.alert {
+    background-color: #bb86fc;
+    border: 1px solid #121212;
+    color: #121212;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: opacity 0.5s ease-in-out;
+    text-align: left;
+}
+
+/*  Primary Background color */
+#bootstrap-overrides {
+    background-color: #121212; 
+}
+
+/* Surface Color */
+.navbar {
+    background-color: #292929 !important; 
+}
+
+/* Font color */
+#navbarNav .nav-link, .logon-form-container{
+    color: #ffffff;
+}
+
+/* Navbar text color on hover */
+.navbar-nav .nav-link:hover {
+    color: #888888  !important; /* Primary color */
+}
+
+/* Navbar brand text color on hover */
+.navbar-brand:hover {
+    color: #888888  !important; /* Primary color */
+}
+
+/* Main Btn Color Theme */
+#bootstrap-overrides .btn-primary {
+    background-color: #bb86fc;
+    border-color: #292929;
+    color: #292929; 
+    border-radius: 10px;
+}
+
+.logon-form-container {
+    background-color: #292929; /* Custom color */
+    padding: 4rem;
+    border-radius: 20px; /* Optional: Add border-radius for a rounded look */
+}
+
+.medium-widget-container {
+    background-color: #292929; /* Custom color */
+    padding: 2rem;
+    border-radius: 20px; /* Optional: Add border-radius for a rounded look */
+    color: #ffffff;
+}
+
+.small-widget-container {
+    background-color: #292929; /* Custom color */
+    padding: 1rem;
+    border-radius: 20px; /* Optional: Add border-radius for a rounded look */
+    color: #ffffff;
+}
+
+.medium-widget-container:hover, .small-widget-container:hover {
+    box-shadow: 0 8px 18px #bb86fc;
+}
+
+.card {
+    background-color: #292929; /* Surface color */
+    border: none;
+}
+
+.widget-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows widgets to wrap to the next line if there's not enough space */
+    justify-content: space-between; /* Distributes space between widgets */
+}
+
+.container {
+    flex: 0 0 100%; /* Flex property: flex-grow flex-shrink flex-basis */
+    margin-bottom: 12px;
+}
+
+.widget-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust the values as needed */
+    transition: box-shadow 0.3s ease; /* Add a transition effect for smooth changes */
+}
+
+.widget-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Adjust the values for the hover effect */
+}
