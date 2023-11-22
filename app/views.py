@@ -1,9 +1,10 @@
 '''Flask imports'''
-from flask import render_template, redirect, url_for, request, flash
+from flask import render_template, redirect, url_for, request, flash, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 
@@ -26,9 +27,13 @@ admin.add_view(EventAdmin(Event, db.session))
 def home():
     '''Dashboard'''
     user = current_user
-    event_count = user.events_attending_count()
+    
+    # Get total event count by getting largest id
+    total_event_count = db.session.query(func.max(Event.id)).scalar()
+    if total_event_count is None:
+        total_event_count = 0
 
-    return render_template('home.html', user=user, event_count=event_count)
+    return render_template('home.html', user=user, total_event_count=total_event_count)
 
 '''Code to handle login authentication'''
 @app.route('/login', methods=['GET', 'POST'])
@@ -85,8 +90,9 @@ def logout():
 @app.route('/myevents', methods=['GET', 'POST'])
 @login_required
 def myevents():
+    my_events = current_user.events_attending
     # Logic to fetch and display upcoming events
-    return render_template('myevents.html')
+    return render_template('myevents.html', my_events=my_events)
 
 @app.route('/upcoming', methods=['GET', 'POST'])
 @login_required
@@ -108,6 +114,7 @@ def createevents():
         description = form.description.data
 
         new_event = Event(title=title, date=date, time=time, location=location, description=description, creator=current_user)
+        new_event.attendees.append(current_user)
         db.session.add(new_event)
         db.session.commit()
 
@@ -115,3 +122,55 @@ def createevents():
         return redirect(url_for('home'))
 
     return render_template('createevents.html', form=form)
+
+@app.route('/join_event/<int:event_id>')
+def join_event(event_id):
+    '''function route to join events'''
+    event = Event.query.get(event_id)
+    if event is None:
+        flash('Event not available')
+        return redirect(url_for('upcomingevents'))
+
+    if current_user in event.attendees:
+        flash('Already joined this event.')
+        return redirect(url_for('upcomingevents'))
+
+    event.attendees.append(current_user)
+    db.session.commit()
+
+    flash('You have successfully joined the event!')
+    return redirect(url_for('upcomingevents'))
+
+@app.route('/leave_event/<int:event_id>')
+def leave_event(event_id):
+    '''function route to Leave events'''
+    event = Event.query.get(event_id)
+
+    if current_user not in event.attendees:
+        flash('Already left this event.')
+        return redirect(url_for('myevents'))
+
+    event.attendees.remove(current_user)
+    db.session.commit()
+
+    flash('You have successfully left the event!')
+    return redirect(url_for('myevents'))
+
+@app.route('/like_event',  methods=['GET', 'POST'])
+def like_event():
+    '''function to handle ajax request to update like counts for event'''
+    event_id = request.form.get('event_id')
+    event = Event.query.get(event_id)
+
+    if current_user in event.likes:
+        event.likes.remove(current_user)
+        db.session.commit()
+        return jsonify({'success': False, 'likes': len(event.likes)})
+
+    else:
+        event.likes.append(current_user)
+        db.session.commit()
+        return jsonify({'success': True, 'likes': len(event.likes)})
+
+
+   

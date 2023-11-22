@@ -6,7 +6,7 @@
 <div class="widget-container">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-4">
+            <div class="col-md-12 mx-auto text-center m-2">
                 <div class="container small-widget-container">
                     {% if current_user.is_authenticated %}
                     <div class="card">
@@ -14,27 +14,39 @@
                             <h5 class="card-title">Welcome back {{ user.username }}!</h5>
                         </div>
                     </div>
-                    {% endif %}
+                {% endif %}
                 </div>
-            </div>  
-        </div> 
-    </div>
-
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-4">
+            </div>
+            <div class="col-md-6 mx-auto text-center">
                 <div class="container medium-widget-container">
                     {% if current_user.is_authenticated %}
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Events You're Attending</h5>
                             <p class="card-text">Total: {{ current_user.events_attending_count() }}</p>
-                            <a href="{{ url_for('myevents') }}" class="btn btn-primary">View Events</a>
+                            <a href="{{ url_for('myevents') }}" class="btn btn-primary">View Joined Events</a>
                         </div>
                     </div>
                     {% endif %}
                 </div>
-            </div>  
+            </div>
+            <div class="col-md-6 mx-auto text-center">
+                <div class="container medium-widget-container">
+                    {% if current_user.is_authenticated %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming Public Events</h5>
+                            {% if  total_event_count != 0 %}
+                            <p class="card-text">Total: {{ total_event_count }}</p>
+                            {% else %}
+                            <p class="card-text">No Event Available</p>
+                            {% endif %}
+                            <a href="{{ url_for('upcomingevents') }}" class="btn btn-primary">View Upcoming Events</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div> 
     </div>
 </div>

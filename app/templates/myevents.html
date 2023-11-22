@@ -3,4 +3,28 @@
 {% block title %}My Events{% endblock %}
 
 {% block content %}
+<div class="container">
+    <h2 class="event-title">My Joined Events</h2>
+    <div class="row">
+      {% for event in my_events %}
+        <div class="col-md-4">
+          <div class="container medium-widget-container mt-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ event.title }}</h5>
+                <p class="card-text">
+                  Date: {{  event.date.strftime('%Y-%m-%d') }}<br>
+                  Time: {{ event.time.strftime('%H:%M') }}<br>
+                  Location: {{ event.location }}<br>
+                  Description: {{ event.description }}<br>
+                  Creator: {{ event.creator.username }}
+                </p>
+                <a href="{{ url_for('leave_event', event_id=event.id) }}" class="btn btn-primary">Leave Event</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}

@@ -10,6 +10,12 @@ attendance = db.Table(
     db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
 )
 
+likes = db.Table(
+    'likes',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
+)
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -22,6 +28,9 @@ class User(db.Model, UserMixin):
     # Relationship to events the user is attending
     events_attending = db.relationship('Event', secondary=attendance, back_populates='attendees')
     created_events = db.relationship('Event', back_populates='creator')
+
+    # Relationship to events the user liked
+    liked_events = db.relationship('Event', secondary=likes, back_populates='likes')
 
     def set_password(self, password):
         """Set the user's password in hashed format."""
@@ -45,6 +54,8 @@ class Event(db.Model):
 
     # Relationship to attendees through the attendance table
     attendees = db.relationship('User', secondary=attendance, back_populates='events_attending')
-    creator_id = db.Column(db.Integer, db.ForeignKey('user.id', name='fk_event_creator'), nullable=False)
+    # Relationship to users who liked the event
+    likes = db.relationship('User', secondary=likes, back_populates='liked_events')
+
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     creator = db.relationship('User', back_populates='created_events')
-    

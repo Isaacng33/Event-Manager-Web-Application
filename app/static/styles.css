@@ -8,7 +8,7 @@
 }
 
 .alert {
-    background-color: #bb86fc;
+    background-color: #ffd1dc;
     border: 1px solid #121212;
     color: #121212;
     padding: 10px;
@@ -45,7 +45,7 @@
 
 /* Main Btn Color Theme */
 #bootstrap-overrides .btn-primary {
-    background-color: #bb86fc;
+    background-color: #ffd1dc;
     border-color: #292929;
     color: #292929; 
     border-radius: 10px;
@@ -72,7 +72,7 @@
 }
 
 .medium-widget-container:hover, .small-widget-container:hover {
-    box-shadow: 0 8px 18px #bb86fc;
+    box-shadow: 0 8px 18px #ffd1dc;
 }
 
 .card {
@@ -83,7 +83,7 @@
 .widget-container {
     display: flex;
     flex-wrap: wrap; /* Allows widgets to wrap to the next line if there's not enough space */
-    justify-content: space-between; /* Distributes space between widgets */
+    
 }
 
 .container {
@@ -92,10 +92,14 @@
 }
 
 .widget-card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust the values as needed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adjust the values as needed */
     transition: box-shadow 0.3s ease; /* Add a transition effect for smooth changes */
 }
 
 .widget-card:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Adjust the values for the hover effect */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adjust the values for the hover effect */
+}
+
+.event-title {
+    color: #ffffff;
 }
