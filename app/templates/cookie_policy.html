@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Cookie Policy{% endblock %}
+
+{% block content %}
+<div class="container mt-5 cookie-text">
+  <h2>Cookie Policy</h2>
+  <p>
+    This website uses cookies to ensure you get the best experience. Cookies are small text files that are stored on your computer or mobile device when you visit a website.
+  </p>
+  <hr class="cookie-hr">
+  <h3>Types of Cookies</h3>
+  <p>
+    We use functional cookies to enhance your browsing experience and analytical cookies to analyze how our website is used. These cookies do not store any personal information.
+  </p>
+  <hr class="cookie-hr">
+  <h3>Managing Cookies</h3>
+  <p>
+    You can control and manage cookies in your browser settings. Please note that restricting cookies may impact the functionality of the website.
+  </p>
+  <hr class="cookie-hr">
+  <h3>Consent</h3>
+  <p>
+    By using our website, you consent to the use of cookies as described in this Cookie Policy.
+  </p>
+  <hr class="cookie-hr">
+  <h3>Changes to This Policy</h3>
+  <p>
+    We may update our Cookie Policy to reflect changes in technology or applicable regulations. Please check this page periodically for any updates.
+  </p>
+  <hr class="cookie-hr">
+  <a href="{{ url_for('clear_cookie') }}" class="btn btn-primary">Clear cookies</a>
+</div>
+
+{% endblock %}

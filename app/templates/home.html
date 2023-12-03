@@ -3,10 +3,11 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+<div class="my-5"></div>
 <div class="widget-container">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-12 mx-auto text-center m-2">
+        <div class="row align-items-center dashboard">
+            <div class="col-md-12 mx-auto text-center m-2 mb-3">
                 <div class="container small-widget-container">
                     {% if current_user.is_authenticated %}
                     <div class="card">
@@ -17,20 +18,8 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="col-md-6 mx-auto text-center">
-                <div class="container medium-widget-container">
-                    {% if current_user.is_authenticated %}
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Events You're Attending</h5>
-                            <p class="card-text">Total: {{ current_user.events_attending_count() }}</p>
-                            <a href="{{ url_for('myevents') }}" class="btn btn-primary">View Joined Events</a>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="col-md-6 mx-auto text-center">
+            
+            <div class="col-md-6 mx-auto text-center mb-3">
                 <div class="container medium-widget-container">
                     {% if current_user.is_authenticated %}
                     <div class="card">
@@ -47,7 +36,116 @@
                     {% endif %}
                 </div>
             </div>
+
+            <div class="col-md-6 mx-auto text-center mb-3">
+                <div class="container medium-widget-container">
+                    {% if current_user.is_authenticated %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Past Public Events</h5>
+                            {% if  total_past_event != 0 %}
+                            <p class="card-text">Total: {{ total_past_event }}</p>
+                            {% else %}
+                            <p class="card-text">No Past Events</p>
+                            {% endif %}
+                            <a href="{{ url_for('pastevents') }}" class="btn btn-primary">View Past Events</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6 mx-auto text-center mb-3">
+                <div class="container medium-widget-container">
+                    {% if current_user.is_authenticated %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Events You're Attending</h5>
+                            <p class="card-text">Total: {{ total_joined_event }}</p>
+                            <a href="{{ url_for('myevents') }}" class="btn btn-primary">View Joined Events</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6 mx-auto text-center mb-3">
+                <div class="container medium-widget-container">
+                    {% if current_user.is_authenticated %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Manage Your Created Events</h5>
+                            {% if  total_manage_event != 0 %}
+                            <p class="card-text">Total: {{ total_manage_event }}</p>
+                            {% else %}
+                            <p class="card-text">No Event Available</p>
+                            {% endif %}
+                            <a href="{{ url_for('manageevents') }}" class="btn btn-primary">Manage Events</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
         </div> 
+    </div>
+</div>
+
+<div class="my-4"></div>
+<div class="quick-form-container">
+    <div class="container">
+        <div class="row align-items-center ">
+            <div class="col-md-6 mx-auto text-center m-2">
+                <div class="container small-widget-container quick-form">
+                    {% if current_user.is_authenticated %}
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 class="card-title">Quick Create Event</h4>
+                        </div>
+                        <form method="post" action="{{ url_for('createevents') }}">
+                            {{ form.hidden_tag() }}
+                            <div class="form-group">
+                                {{ form.title.label }}
+                                {{ form.title(class="form-control col-md-9 mx-auto") }}
+                                {% for error in form.title.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.start_datetime.label }}
+                                {{ form.start_datetime(class="form-control col-md-9 mx-auto") }}
+                                {% for error in form.start_datetime.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.end_datetime.label }}
+                                {{ form.end_datetime(class="form-control col-md-9 mx-auto") }}
+                                {% for error in form.end_datetime.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.location.label }}
+                                {{ form.location(class="form-control col-md-9 mx-auto") }}
+                                {% for error in form.location.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.description.label }}
+                                {{ form.description(class="form-control col-md-9 mx-auto") }}
+                                {% for error in form.description.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Quick Create</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

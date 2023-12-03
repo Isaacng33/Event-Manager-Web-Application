@@ -2,7 +2,7 @@
 from app import db, login_manager
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from sqlalchemy import Interval
 
 attendance = db.Table(
     'attendance',
@@ -25,6 +25,11 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+    # Additional Fields for Basic Information (Optional Input)
+    first_name = db.Column(db.String(50), nullable=True)
+    last_name = db.Column(db.String(50), nullable=True)
+    email = db.Column(db.String(120), unique=True, nullable=True)
+
     # Relationship to events the user is attending
     events_attending = db.relationship('Event', secondary=attendance, back_populates='attendees')
     created_events = db.relationship('Event', back_populates='creator')
@@ -46,10 +51,11 @@ class User(db.Model, UserMixin):
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
-    time = db.Column(db.DateTime, nullable=False)
-    location = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(50), nullable=False)
+    start_datetime = db.Column(db.DateTime, nullable=False)
+    end_datetime = db.Column(db.DateTime, nullable=False)
+    duration = db.Column(Interval, nullable=False)
+    location = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text)
 
     # Relationship to attendees through the attendance table

@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Create Event{% endblock %}
+{% block title %}Edit Event{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-md-7">
             <div class="container logon-form-container">
-                <h2>Create Event</h2>
-                <form method="post" action="{{ url_for('createevents') }}">
+                <h2>Edit Event</h2>
+                <form method="post" action="{{ url_for('edit_event', event_id=event.id) }}">
                     {{ form.hidden_tag() }}
                     <div class="form-group">
                         {{ form.title.label }}
@@ -45,7 +45,8 @@
                             <span class="text-danger">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    <button type="submit" class="btn btn-primary">Create Event</button>
+                    <a href="{{ url_for('manageevents') }}" class="btn btn-primary">Back</a>
+                    <button type="submit" class="btn btn-primary">Confirm Edit</button>
                 </form>
             </div>
         </div> 

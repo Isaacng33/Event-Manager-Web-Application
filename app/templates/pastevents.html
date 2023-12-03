@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}All Upcoming Events{% endblock %}
+{% block title %}Past Events Catalog{% endblock %}
 
 {% block content %}
 <div class="my-5"></div>
@@ -8,7 +8,7 @@
   <div class="float">
     <div class="row align-items-center">
       <div class="col">
-        <h2 class="event-title">Discover Events</h2>
+        <h2 class="event-title">Past Events Catalog</h2>
         <hr class="mr-2 event-divider">
       </div>
       <div class="col-auto ml-auto">
@@ -20,7 +20,7 @@
         </button>
       </div>
     </div>
-    <form method="post" action="/upcoming" class="filterForm" id="filterForm">
+    <form method="post" action="/pastevents" class="filterForm" id="filterForm">
       {{ form.csrf_token }}
       {{ form.hidden_tag() }}
       <div class="row">
@@ -106,7 +106,6 @@
                   {{ event.creator.username }}
                 </p>
                 <div class="d-flex justify-content-between">
-                  <a href="{{ url_for('join_event', event_id=event.id) }}" class="btn btn-primary">Join Event</a>
                   <div class="d-flex justify-content-between align-items-center">
                     <button class="btn like-button ml-auto mr-2" data-event-id="{{ event.id }}">
                       {% if event in current_user.liked_events %}
@@ -185,7 +184,6 @@
                 </div>
               </div>
               <div class="d-flex justify-content-between align-items-center mb-3 ml-3 mr-3">
-                <a href="{{ url_for('join_event', event_id=event.id) }}" class="btn btn-primary">Join Event</a>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
               </div>
             </div>

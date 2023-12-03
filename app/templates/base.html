@@ -6,9 +6,15 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../static/styles.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <title>{% block title %}Home{% endblock %}</title>
 </head>
 <body id="bootstrap-overrides">
+    <div class="visually-hidden">
+        Background Image of event chairs, Photo By Andrei Stratu (https://unsplash.com/photos/black-metal-car-seat-aligned-kcJsQ3PJrYU)
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
         <a class="navbar-brand" href="/">Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +29,12 @@
                     <a class="nav-link" href="{{ url_for('upcomingevents') }}">Upcoming Events</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('pastevents') }}">Past Events</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('manageevents') }}">Manage Events</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('createevents') }}">Create Events</a>
                 </li>
             </ul>
@@ -30,7 +42,22 @@
                 {% if current_user.is_authenticated %}
                     <!-- Show logout button if user is logged in -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        <a class="nav-link" href="{{ url_for('profile') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="white" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                <title>Profile</title>
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                              </svg>
+                        </a>
+                    </li>
+                    <!-- Show logout button if user is logged in -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="white" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                                <title>Logout</title>
+                                <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0z"/>
+                                <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                              </svg>
+                        </a>
                     </li>
                 {% else %}
                     <!-- Show login and register links if user is not logged in -->
@@ -56,26 +83,11 @@
             </div>
         {% endif %}
     {% endwith %}
-    <div class="my-3"></div>
-    <div>
+    <div class="100vh">
         {% block content %}{% endblock %}
     </div>
-
-    <script>
-        // Automatically hide flash messages after 5 seconds
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                var flashMessage = document.getElementById('flash-message');
-                if (flashMessage) {
-                    flashMessage.style.opacity = '0';
-                    setTimeout(function() {
-                        flashMessage.remove();
-                    }, 500);
-                }
-            }, 3000); // Adjust the time (in milliseconds) as needed
-        });
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>\
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
 </body>
 </html>
