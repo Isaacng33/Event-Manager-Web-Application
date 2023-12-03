@@ -1,24 +1,36 @@
-'''Flask imports'''
+'''Core Imports'''
+from datetime import datetime
+
 from flask import render_template, redirect, url_for, request, flash, jsonify, make_response
 from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from flask_admin.contrib.sqla import ModelView
-from sqlalchemy.exc import IntegrityError
-from datetime import datetime
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
 
-
-
-'''Local Imports'''
 from app import app, db, admin
-from app.models import db, User, Event
+from app.models import User, Event
 from app.forms import RegistrationForm, LoginForm, EventForm, EventFilterForm, EditProfileForm
 
 class UserAdmin(ModelView):
-    column_list = ('id', 'username', 'events_attending', 'created_events', 'liked_events')
+    ''' Allow Admin view on User Model'''
+    column_list = ('id',
+                   'username', 
+                   'events_attending', 
+                   'created_events', 
+                   'liked_events')
 
 class EventAdmin(ModelView):
-    column_list = ('id', 'title', 'start_datetime','end_datetime', 'duration', 'location', 'description', 'attendees', 'likes')
+    ''' Allow Admin view on Event Model'''
+    column_list = ('id',
+                   'title', 
+                   'start_datetime',
+                   'end_datetime', 
+                   'duration', 
+                   'location', 
+                   'description', 
+                   'attendees', 
+                   'likes')
 
 admin.add_view(UserAdmin(User, db.session))
 admin.add_view(EventAdmin(Event, db.session))
@@ -30,17 +42,28 @@ def home():
     user = current_user
     form = EventForm()
 
+    # Only display the count for the current datetime event
     current_datetime = datetime.utcnow()
     total_event_count = Event.query.filter(Event.start_datetime >= current_datetime).count()
-    total_joined_event = Event.query.filter(and_(Event.start_datetime >= current_datetime, Event.attendees.any(id=current_user.id))).count()
-    total_manage_event = Event.query.filter(Event.creator == current_user, Event.start_datetime >= current_datetime).count()
+    total_joined_event = Event.query.filter(and_
+                                            (Event.start_datetime >= current_datetime,
+                                             Event.attendees.any(id=current_user.id))).count()
+    total_manage_event = Event.query.filter(Event.creator == current_user,
+                                            Event.start_datetime >= current_datetime).count()
     total_past_event = Event.query.filter(Event.start_datetime < current_datetime).count()
 
-    return render_template('home.html', form=form, user=user, total_event_count=total_event_count, total_manage_event=total_manage_event, total_joined_event=total_joined_event, total_past_event=total_past_event)
+    return render_template('home.html',
+                           form=form,
+                           user=user,
+                           total_event_count=total_event_count,
+                           total_manage_event=total_manage_event,
+                           total_joined_event=total_joined_event,
+                           total_past_event=total_past_event)
 
-'''Code to handle login authentication'''
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    '''Code to handle login authentication'''
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -53,7 +76,7 @@ def login():
             login_user(user)
             flash('Login successful!', 'success')
             return redirect(url_for('home'))
-        
+
         flash('Incorrect username or password. Please try again.', 'danger')
 
     return render_template('loginpage.html', form=form)
@@ -62,7 +85,7 @@ def login():
 def register():
     '''Register Page'''
     form = RegistrationForm()
-  
+
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
@@ -96,11 +119,17 @@ def myevents():
     '''Parse all the joined events and outputs it'''
     form = EventFilterForm()
     current_datetime = datetime.utcnow()
-    my_events = Event.query.filter(and_(Event.start_datetime >= current_datetime, Event.attendees.any(id=current_user.id)))
+    my_events = Event.query.filter(and_(
+        Event.start_datetime >= current_datetime,
+        Event.attendees.any(id=current_user.id)))
     my_events = my_events.order_by(Event.start_datetime)
 
     if form.validate_on_submit():
-        my_events = get_filtered_events(my_events, form.event.data, form.creator.data, form.liked.data, form.date.data)
+        my_events = get_filtered_events(my_events,
+                                        form.event.data,
+                                        form.creator.data,
+                                        form.liked.data,
+                                        form.date.data)
 
     # Logic to fetch and display upcoming events
     return render_template('myevents.html', my_events=my_events, form=form)
@@ -116,7 +145,11 @@ def upcomingevents():
     all_events = all_events.order_by(Event.start_datetime)
 
     if form.validate_on_submit():
-        all_events = get_filtered_events(all_events, form.event.data, form.creator.data, form.liked.data, form.date.data)
+        all_events = get_filtered_events(all_events,
+                                         form.event.data,
+                                         form.creator.data,
+                                         form.liked.data,
+                                         form.date.data)
 
     # Logic to fetch and display event categories
     return render_template('upcomingevents.html', all_events=all_events, form=form)
@@ -127,12 +160,17 @@ def pastevents():
     '''Gets all the past] events and outputs it'''
     form = EventFilterForm()
     current_datetime = datetime.utcnow()
+    # Make sure the event displayed is up to date
     all_events = Event.query.filter(Event.start_datetime < current_datetime)
     # Sorts to to earliest date first
     all_events = all_events.order_by(Event.start_datetime)
 
     if form.validate_on_submit():
-        all_events = get_filtered_events(all_events, form.event.data, form.creator.data, form.liked.data, form.date.data)
+        all_events = get_filtered_events(all_events,
+                                         form.event.data,
+                                         form.creator.data,
+                                         form.liked.data,
+                                         form.date.data)
 
     # Logic to fetch and display event categories
     return render_template('pastevents.html', all_events=all_events, form=form)
@@ -140,6 +178,7 @@ def pastevents():
 
 def get_filtered_events(evt, event, creator, liked, date):
     '''Filters event output based on the parameters'''
+    # Simple filter function that checks on the input and returns it
     if event:
         evt = evt.filter(Event.title.contains(event))
 
@@ -158,6 +197,7 @@ def get_filtered_events(evt, event, creator, liked, date):
 @app.route('/create_event', methods=['GET', 'POST'])
 @login_required
 def createevents():
+    '''View to manage creating event logic'''
     form = EventForm()
 
     if form.validate_on_submit():
@@ -169,11 +209,15 @@ def createevents():
 
         # To Calculate the duration of the event
         duration = end_datetime - start_datetime
-        days = duration.days
-        hours, remainder = divmod(duration.seconds, 3600)
-        minutes = remainder // 60
 
-        new_event = Event(title=title, start_datetime=start_datetime, end_datetime=end_datetime, duration=duration, location=location, description=description, creator=current_user)
+        # Creates a new event with the info
+        new_event = Event(title=title,
+                          start_datetime=start_datetime,
+                          end_datetime=end_datetime,
+                          duration=duration,
+                          location=location,
+                          description=description,
+                          creator=current_user)
         db.session.add(new_event)
         db.session.commit()
 
@@ -190,6 +234,7 @@ def join_event(event_id):
         flash('Event not available')
         return redirect(url_for('upcomingevents'))
 
+    # check if the current user is in the event
     if current_user in event.attendees:
         flash('Already joined this event.')
         return redirect(url_for('upcomingevents'))
@@ -205,6 +250,7 @@ def leave_event(event_id):
     '''function route to Leave events'''
     event = Event.query.get(event_id)
 
+    # check if the current user is in the event
     if current_user not in event.attendees:
         flash('Already left this event.')
         return redirect(url_for('myevents'))
@@ -221,6 +267,7 @@ def like_event():
     event_id = request.form.get('event_id')
     event = Event.query.get(event_id)
 
+    # Simple logic to check if the event is liked by current user
     if current_user in event.likes:
         event.likes.remove(current_user)
         db.session.commit()
@@ -229,13 +276,17 @@ def like_event():
     event.likes.append(current_user)
     db.session.commit()
     return jsonify({'success': True, 'likes': len(event.likes)})
-    
+
 @app.route('/manage_events',  methods=['GET', 'POST'])
 @login_required
 def manageevents():
+    '''Display a list of tools for event that the creator has made'''
     form = EventFilterForm()
     current_datetime = datetime.utcnow()
-    my_created_events = Event.query.filter(and_(Event.creator_id == current_user.id, Event.start_datetime >= current_datetime)).all()
+    # Make sure the event date is up to date and is created by the current user
+    my_created_events = Event.query.filter(and_(
+        Event.creator_id == current_user.id,
+        Event.start_datetime >= current_datetime)).all()
 
     return render_template('manageevents.html', my_created_events=my_created_events, form=form)
 
@@ -258,6 +309,7 @@ def edit_event(event_id):
     event = Event.query.get_or_404(event_id)
     form = EventForm(obj=event)
 
+    # Get all the updated info
     if form.validate_on_submit():
         event.title = form.title.data
         event.start_datetime = form.start_datetime.data
@@ -267,9 +319,6 @@ def edit_event(event_id):
 
         # To Calculate the duration of the event
         event.duration = event.end_datetime - event.start_datetime
-        days = event.duration.days
-        hours, remainder = divmod(event.duration.seconds, 3600)
-        minutes = remainder // 60
 
         # Save the changes to the database
         db.session.commit()
@@ -282,13 +331,15 @@ def edit_event(event_id):
 @app.route('/profile',  methods=['GET', 'POST'])
 @login_required
 def profile():
+    '''Display basic information for the current user'''
     user=current_user
     form = EditProfileForm(obj=user)
 
     if form.validate_on_submit():
         if form.new_username.data:
             # Check if the new username is not taken
-            if form.new_username.data != current_user.username and User.query.filter_by(username=form.new_username.data).first():
+            if form.new_username.data != current_user.username and User.query.filter_by(
+                username=form.new_username.data).first():
                 flash('Username is already taken. Please choose a different one.', 'danger')
             else:
                 current_user.username = form.new_username.data
@@ -299,8 +350,9 @@ def profile():
         if current_user.last_name != form.last_name.data:
             current_user.last_name = form.last_name.data
 
-        if form.email.data != current_user.email and User.query.filter_by(email=form.email.data).first():
-                flash('Email is already taken. Please choose a different one.', 'danger')
+        if form.email.data != current_user.email and User.query.filter_by(
+            email=form.email.data).first():
+            flash('Email is already taken. Please choose a different one.', 'danger')
         else:
             current_user.email = form.email.data
 
@@ -311,12 +363,12 @@ def profile():
 
 @app.route("/cookie-policy")
 def cookie_policy():
-    # Your cookie policy content here
+    '''Basic view for cookie pollicy'''
     return render_template("cookie_policy.html")
 
 @app.route('/clear_cookie')
 def clear_cookie():
-    # Clear the 'user' cookie
+    '''Allows user the choice to clear cookies'''
     response = make_response("Cookie has been cleared!")
     response.delete_cookie('user')
     flash("Cookie has been cleared!")
